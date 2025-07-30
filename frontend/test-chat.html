@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Sessions Test</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="astra-workspace flex">
+        <!-- Middle Panel - Workflow (20%) -->
+        <div class="astra-workflow-panel">
+            <!-- Top Half - Chat Sessions -->
+            <div class="workflow-top">
+                <h3 class="text-sm font-bold text-main mb-3">Chat Sessions</h3>
+                <button class="new-chat-btn mb-4">+ New Chat</button>
+                <div class="chat-sessions">
+                    <div class="chat-sessions-list">
+                        <!-- Chat sessions will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Chat Assistant (40%) -->
+        <div class="astra-chat-panel">
+            <div class="chat-header">
+                <h3>AI Chat Assistant</h3>
+            </div>
+            <div id="astra-chat-messages" class="chat-messages">
+                <!-- Chat messages will be populated dynamically -->
+            </div>
+            <div class="chat-input-area">
+                <!-- Chat Input -->
+                <form id="astra-chat-form" class="chat-input-container">
+                    <textarea id="astra-chat-input" class="chat-input" placeholder="Type your message or ask about your data..." rows="1"></textarea>
+                    <button type="submit" class="chat-send-btn">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/astra.js"></script>
+    <script>
+        // Initialize chat sessions when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Test page loaded, initializing Astra Workspace...');
+            
+            // Initialize the workspace
+            if (window.AstraWorkspace) {
+                AstraWorkspace.init();
+                console.log('Astra Workspace initialized for testing');
+            } else {
+                console.error('AstraWorkspace not found');
+            }
+        });
+    </script>
+</body>
+</html> 

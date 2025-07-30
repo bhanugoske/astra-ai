@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Command Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        .test-panel {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        input {
+            background: #2d3748;
+            color: white;
+            border: 1px solid #4a5568;
+            padding: 10px;
+            border-radius: 5px;
+            width: 300px;
+        }
+        .log {
+            background: #000;
+            padding: 10px;
+            border-radius: 5px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎤 Voice Command Test</h1>
+    
+    <div class="test-panel">
+        <h3>Manual Command Test</h3>
+        <input type="text" id="command-input" placeholder="Enter command (e.g., 'initiate workflow')" value="initiate workflow">
+        <button onclick="testCommand()">Test Command</button>
+        <button onclick="testDirectWorkflow()">Test Direct Workflow</button>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+    
+    <div class="test-panel">
+        <h3>System Status</h3>
+        <div id="status">Checking...</div>
+    </div>
+    
+    <div class="test-panel">
+        <h3>Debug Log</h3>
+        <div id="debug-log" class="log"></div>
+    </div>
+    
+    <script>
+        // Override console functions to capture logs
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        function logToPanel(message, type = 'log') {
+            const logPanel = document.getElementById('debug-log');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#ff6b6b' : type === 'warn' ? '#ffd93d' : '#6bcf7f';
+            logPanel.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            logPanel.scrollTop = logPanel.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            logToPanel(args.join(' '), 'log');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            logToPanel(args.join(' '), 'error');
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            logToPanel(args.join(' '), 'warn');
+        };
+        
+        function testCommand() {
+            const command = document.getElementById('command-input').value;
+            console.log('🧪 Testing command:', command);
+            
+            if (window.astraVoiceAgent && typeof window.astraVoiceAgent.testCommand === 'function') {
+                window.astraVoiceAgent.testCommand(command);
+            } else if (window.astraVoiceAgent && typeof window.astraVoiceAgent.processCommand === 'function') {
+                window.astraVoiceAgent.processCommand(command);
+            } else {
+                console.error('❌ AstraVoiceAgent not available');
+            }
+        }
+        
+        function testDirectWorkflow() {
+            console.log('🧪 Testing direct workflow call...');
+            
+            if (window.astraApp && typeof window.astraApp.handleWorkflowCommands === 'function') {
+                window.astraApp.handleWorkflowCommands('initiate workflow', 'initiate workflow');
+            } else {
+                console.error('❌ AstraApp not available');
+            }
+        }
+        
+        function clearLog() {
+            document.getElementById('debug-log').innerHTML = '';
+        }
+        
+        function updateStatus() {
+            const statusDiv = document.getElementById('status');
+            let status = '';
+            
+            status += 'window.astraVoiceAgent: ' + (window.astraVoiceAgent ? '✅' : '❌') + '<br>';
+            status += 'window.astraApp: ' + (window.astraApp ? '✅' : '❌') + '<br>';
+            
+            if (window.astraVoiceAgent) {
+                status += 'Voice Agent Active: ' + (window.astraVoiceAgent.isActive ? '✅' : '❌') + '<br>';
+                status += 'Voice Agent Listening: ' + (window.astraVoiceAgent.isListening ? '✅' : '❌') + '<br>';
+            }
+            
+            if (window.astraApp) {
+                status += 'handleWorkflowCommands: ' + (typeof window.astraApp.handleWorkflowCommands === 'function' ? '✅' : '❌') + '<br>';
+                status += 'openWorkflowModal: ' + (typeof window.astraApp.openWorkflowModal === 'function' ? '✅' : '❌') + '<br>';
+            }
+            
+            const modal = document.getElementById('workflow-modal');
+            status += 'Workflow Modal: ' + (modal ? '✅' : '❌') + '<br>';
+            if (modal) {
+                status += 'Modal Hidden: ' + (modal.classList.contains('hidden') ? '✅' : '❌') + '<br>';
+            }
+            
+            statusDiv.innerHTML = status;
+        }
+        
+        // Update status every 2 seconds
+        setInterval(updateStatus, 2000);
+        
+        // Initial status check
+        window.addEventListener('load', () => {
+            console.log('🔍 Voice Command Test Page Loaded');
+            updateStatus();
+        });
+        
+        // Allow Enter key to test command
+        document.getElementById('command-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                testCommand();
+            }
+        });
+    </script>
+</body>
+</html> 

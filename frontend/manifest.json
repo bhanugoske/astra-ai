@@ -1,0 +1,35 @@
+{
+  "name": "Astra AI Analytics Platform",
+  "short_name": "Astra AI",
+  "description": "Enterprise-grade AI analytics and data processing platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "images/astralogo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "business", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Data Analysis",
+      "short_name": "Analysis",
+      "description": "Access data analysis tools",
+      "url": "/#data-analysis",
+      "icons": [{ "src": "images/astralogo.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Astra Workspace",
+      "short_name": "Workspace",
+      "description": "Launch AI workspace",
+      "url": "/#astra",
+      "icons": [{ "src": "images/astralogo.png", "sizes": "96x96" }]
+    }
+  ]
+}

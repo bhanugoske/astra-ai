@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal.hidden {
+            display: none;
+        }
+        .modal-content {
+            background: #2d3748;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Modal Test</h1>
+    
+    <button onclick="testModalOpen()">Open Modal Manually</button>
+    <button onclick="testModalClose()">Close Modal</button>
+    <button onclick="testWorkflowFunction()">Test Workflow Function</button>
+    
+    <div id="test-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Test Modal</h3>
+            <p>This is a test modal to verify modal functionality.</p>
+            <button onclick="testModalClose()">Close</button>
+        </div>
+    </div>
+    
+    <div id="log" style="margin-top: 20px; background: #000; padding: 10px; border-radius: 5px; height: 200px; overflow-y: auto;"></div>
+    
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            logDiv.innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + message + '</div>';
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function testModalOpen() {
+            log('Opening test modal...');
+            const modal = document.getElementById('test-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                log('✅ Test modal opened');
+            } else {
+                log('❌ Test modal not found');
+            }
+        }
+        
+        function testModalClose() {
+            log('Closing test modal...');
+            const modal = document.getElementById('test-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                log('✅ Test modal closed');
+            }
+        }
+        
+        function testWorkflowFunction() {
+            log('Testing workflow function...');
+            
+            // Check if workflow modal exists
+            const workflowModal = document.getElementById('workflow-modal');
+            log('Workflow modal exists: ' + !!workflowModal);
+            
+            if (workflowModal) {
+                log('Workflow modal hidden: ' + workflowModal.classList.contains('hidden'));
+                
+                // Try to open it
+                workflowModal.classList.remove('hidden');
+                log('Attempted to open workflow modal');
+                log('Workflow modal hidden after: ' + workflowModal.classList.contains('hidden'));
+            }
+            
+            // Check if astraApp exists
+            log('window.astraApp exists: ' + !!window.astraApp);
+            if (window.astraApp) {
+                log('openWorkflowModal function exists: ' + typeof window.astraApp.openWorkflowModal);
+                log('handleWorkflowCommands function exists: ' + typeof window.astraApp.handleWorkflowCommands);
+            }
+        }
+        
+        window.addEventListener('load', () => {
+            log('Page loaded');
+            log('Checking for workflow modal...');
+            testWorkflowFunction();
+        });
+    </script>
+</body>
+</html> 

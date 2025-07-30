@@ -1,0 +1,11 @@
+name,age,city,salary,department,hire_date
+John Doe,30,New York,75000,Engineering,2020-01-15
+Jane Smith,28,San Francisco,85000,Marketing,2019-03-20
+Mike Johnson,35,Chicago,70000,Sales,2018-11-10
+Sarah Wilson,32,Boston,80000,Engineering,2020-06-05
+David Brown,29,Los Angeles,90000,Marketing,2019-09-12
+Lisa Davis,31,Seattle,75000,Sales,2020-02-28
+Tom Miller,33,Austin,85000,Engineering,2019-12-01
+Emma Garcia,27,Denver,70000,Marketing,2020-04-15
+Alex Rodriguez,34,Miami,80000,Sales,2019-07-22
+Maria Lopez,26,Portland,75000,Engineering,2020-08-10 

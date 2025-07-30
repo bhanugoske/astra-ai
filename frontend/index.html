@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astra AI | Professional Analytics Dashboard</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Astra AI">
+    
+    <!-- Internal CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-main text-main">
+
+    <!-- Main Application Wrapper -->
+    <div id="main-app" class="flex h-screen bg-main">
+        <!-- Mobile Menu Toggle (hidden on desktop) -->
+        <button id="mobile-menu-toggle" class="fixed top-4 left-4 z-50 md:hidden bg-card p-2 rounded-lg border border-main">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+        
+        <!-- Sidebar Navigation -->
+        <nav id="sidebar-nav" class="w-64 md:w-64 bg-card border-r border-main flex-shrink-0 flex flex-col justify-between p-4 fixed md:relative h-full z-40 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+            <div>
+                <div class="flex items-center gap-3 mb-10 px-2">
+                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white overflow-hidden">
+                        <img src="images/astralogo.png" alt="Astra Logo" class="w-full h-full object-cover">
+                    </div>
+                    <span class="text-2xl font-bold text-main">Astra AI</span>
+                </div>
+                <ul class="space-y-2">
+                    <li><a href="#dashboard" class="nav-item active">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <span>Dashboard</span>
+                    </a></li>
+                    <li><a href="#astra" class="nav-item" role="button" aria-label="Access Astra AI Workspace">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M12 2v4"/>
+                          <path d="M12 18v4"/>
+                          <path d="M4.93 4.93l2.83 2.83"/>
+                          <path d="M16.24 16.24l2.83 2.83"/>
+                          <path d="M2 12h4"/>
+                          <path d="M18 12h4"/>
+                          <path d="M4.93 19.07l2.83-2.83"/>
+                          <path d="M16.24 7.76l2.83-2.83"/>
+                          <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <span>Astra</span>
+                    </a></li>
+                    <li><a href="#batch-data" class="nav-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <span>Batch Data</span>
+                    </a></li>
+                    <li><a href="#data-analysis" class="nav-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <span>Data Analysis</span>
+                    </a></li>
+                    <li><a href="#stream-data" class="nav-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline>
+                        </svg>
+                        <span>Stream Data</span>
+                    </a></li>
+                    <li><a href="#data-insights" class="nav-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 9.8c0 7.3-8 11.8-8 11.8z"></path><circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <span>Data Insights</span>
+                    </a></li>
+                    <li><a href="#database" class="nav-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                        </svg>
+                        <span>Database</span>
+                    </a></li>
+                    <li><a href="#reports" class="nav-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <span>Reports</span>
+                    </a></li>
+                    <li><a href="#activity-log" class="nav-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        <span>Activity Log</span>
+                    </a></li>
+                    <li><a href="#settings" class="nav-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        <span>Settings</span>
+                    </a></li>
+                </ul>
+            </div>
+            <div class="px-2 text-center text-xs text-muted">
+                <p>&copy; 2025 Astra AI Platform</p>
+                <p>Built by Bhanu Teja Goske</p>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-card/70 backdrop-blur-lg sticky top-0 z-30 border-b border-main px-6 py-4 flex justify-between items-center">
+                <h1 id="header-title" class="text-2xl font-bold text-main">Dashboard</h1>
+                <div id="header-right-menu" class="flex items-center gap-4"></div>
+                <button id="theme-toggle-btn" class="ml-2 p-2 rounded-full bg-main hover:bg-card border border-main transition flex items-center justify-center" title="Toggle light/dark mode">
+                    <svg id="theme-toggle-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+                    </svg>
+                </button>
+            </header>
+            
+            <!-- Content Sections Wrapper -->
+            <div id="content-sections" class="p-6">
+                <!-- Dashboard Section -->
+                <section id="dashboard-section" class="main-section active">
+                    <!-- Welcome Header -->
+                    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 mb-8 text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-3xl font-bold mb-2">Welcome to Astra AI</h2>
+                                <p class="text-blue-100 text-lg">Enterprise-grade AI analytics and data processing platform</p>
+                            </div>
+                            <div class="hidden md:block">
+                                <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 2v4"/>
+                                        <path d="M12 18v4"/>
+                                        <path d="M4.93 4.93l2.83 2.83"/>
+                                        <path d="M16.24 16.24l2.83 2.83"/>
+                                        <path d="M2 12h4"/>
+                                        <path d="M18 12h4"/>
+                                        <path d="M4.93 19.07l2.83-2.83"/>
+                                        <path d="M16.24 7.76l2.83-2.83"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Metrics -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-card p-6 rounded-2xl border border-blue-500/20">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="7 10 12 15 17 10"/>
+                                        <line x1="12" y1="15" x2="12" y2="3"/>
+                                    </svg>
+                                </div>
+                                <span class="text-green-500 text-sm font-medium">+12%</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-main mb-1">2,847</h3>
+                            <p class="text-muted text-sm">Data Records Processed</p>
+                        </div>
+                        
+                        <div class="bg-card p-6 rounded-2xl border border-green-500/20">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                                    </svg>
+                                </div>
+                                <span class="text-green-500 text-sm font-medium">+8.5%</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-main mb-1">94.2%</h3>
+                            <p class="text-muted text-sm">Model Accuracy</p>
+                        </div>
+                        
+                        <div class="bg-card p-6 rounded-2xl border border-purple-500/20">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                                    </svg>
+                                </div>
+                                <span class="text-green-500 text-sm font-medium">+15%</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-main mb-1">156</h3>
+                            <p class="text-muted text-sm">Active Workflows</p>
+                        </div>
+                        
+                        <div class="bg-card p-6 rounded-2xl border border-orange-500/20">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <polyline points="12 6 12 12 16 14"/>
+                                    </svg>
+                                </div>
+                                <span class="text-green-500 text-sm font-medium">-23%</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-main mb-1">2.4s</h3>
+                            <p class="text-muted text-sm">Avg Processing Time</p>
+                        </div>
+                    </div>
+
+                    <!-- Main Content Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Quick Actions -->
+                        <div class="lg:col-span-2">
+                            <div class="card-modern">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h3 class="text-xl font-bold text-main">Quick Actions</h3>
+                                    <span class="text-sm text-muted bg-blue-500/10 px-3 py-1 rounded-full">Enterprise Ready</span>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <button id="launch-voice-workspace" class="group bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center gap-3 shadow-lg hover:shadow-xl">
+                                        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                                <line x1="12" x2="12" y1="19" y2="22"/>
+                                            </svg>
+                                        </div>
+                                        <div class="text-left">
+                                            <div class="font-semibold">Voice Workspace</div>
+                                            <div class="text-blue-100 text-sm">AI Assistant</div>
+                                        </div>
+                                    </button>
+                                    
+                                    <button id="initiate-workflow-btn" class="group bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center gap-3 shadow-lg hover:shadow-xl">
+                                        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                                <polyline points="17 8 12 3 7 8"/>
+                                                <line x1="12" y1="3" x2="12" y2="15"/>
+                                            </svg>
+                                        </div>
+                                        <div class="text-left">
+                                            <div class="font-semibold">Data Workflow</div>
+                                            <div class="text-green-100 text-sm">Batch Processing</div>
+                                        </div>
+                                    </button>
+                                    
+                                    <button onclick="navigateToSection('batch-data')" class="group bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center gap-3 shadow-lg hover:shadow-xl">
+                                        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                                <polyline points="14 2 14 8 20 8"/>
+                                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                                <line x1="16" y1="17" x2="8" y2="17"/>
+                                                <polyline points="10 9 9 9 8 9"></polyline>
+                                            </svg>
+                                        </div>
+                                        <div class="text-left">
+                                            <div class="font-semibold">Batch Data</div>
+                                            <div class="text-purple-100 text-sm">File Processing</div>
+                                        </div>
+                                    </button>
+                                    
+                                    <button onclick="navigateToSection('data-analysis')" class="group bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center gap-3 shadow-lg hover:shadow-xl">
+                                        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M3 3v18h18"/>
+                                                <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>
+                                            </svg>
+                                        </div>
+                                        <div class="text-left">
+                                            <div class="font-semibold">Analytics</div>
+                                            <div class="text-orange-100 text-sm">Data Insights</div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Activity & Status -->
+                        <div class="space-y-6">
+                            <div class="card-modern">
+                                <h3 class="text-xl font-bold text-main mb-4">System Status</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                                            <span class="text-main">AI Engine</span>
+                                        </div>
+                                        <span class="text-green-500 font-medium">Online</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                                            <span class="text-main">Data Pipeline</span>
+                                        </div>
+                                        <span class="text-green-500 font-medium">Active</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                                            <span class="text-main">Voice Agent</span>
+                                        </div>
+                                        <span class="text-blue-500 font-medium">Ready</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card-modern">
+                                <h3 class="text-xl font-bold text-main mb-4">Recent Activity</h3>
+                                <div id="dashboard-activity-timeline" class="space-y-4">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                                        <div>
+                                            <p class="text-main text-sm font-medium">System initialized</p>
+                                            <p class="text-muted text-xs">Just now</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                                        <div>
+                                            <p class="text-main text-sm font-medium">Voice agent ready</p>
+                                            <p class="text-muted text-xs">2 minutes ago</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                                        <div>
+                                            <p class="text-main text-sm font-medium">Dashboard loaded</p>
+                                            <p class="text-muted text-xs">3 minutes ago</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Astra Section -->
+                <section id="astra-section" class="main-section">
+                    <div class="card-modern">
+                        <div class="text-center">
+                            <h2 class="text-3xl font-bold text-main mb-2">Astra AI Workspace</h2>
+                            <p class="text-muted mb-8">Launch the professional workspace with 3D visualization, workflow management, and AI chat assistant.</p>
+                        </div>
+                        <div class="grid grid-cols-1 max-w-lg mx-auto">
+                            <div id="astra-launch-card" class="astra-launch-card text-center cursor-pointer flex flex-col items-center group">
+                                <div class="astra-voice-icon-large mb-6 group-hover:scale-110 transition-all duration-500">
+                                    <div class="icon-glow-ring"></div>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="relative z-10">
+                                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                        <line x1="12" x2="12" y1="19" y2="22"></line>
+                                    </svg>
+                                </div>
+                                <h3 class="text-3xl font-bold text-main mb-3 brand-glow">Launch Astra Workspace</h3>
+                                <p class="text-muted text-lg">Professional AI Assistant Environment</p>
+                                <div class="launch-effects"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="batch-data-section" class="main-section">
+                    <div class="card-modern">
+                        <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+                            <div>
+                                <h2 class="text-3xl font-bold text-main">Data Processing Workflow</h2>
+                                <p class="text-muted mt-1">Initiate a workflow to load, filter, store, and analyze your data.</p>
+                            </div>
+                            <button id="initiate-workflow-btn" class="btn-gradient">Initiate Workflow</button>
+                        </div>
+                        <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+                            <div id="pipeline-load" class="pipeline-card pending w-full md:flex-1 bg-main p-6 rounded-lg border border-main stagger-item">
+                                <div class="flex items-center mb-2">
+                                    <span class="w-8 h-8 bg-tertiary rounded-full flex items-center justify-center text-main font-bold mr-3 shrink-0">1</span>
+                                    <h3 class="text-xl font-semibold text-main">Load Data</h3>
+                                </div>
+                                <div id="pipeline-load-content" class="text-sm text-muted min-h-[4rem]">Upload a CSV or Excel file.</div>
+                            </div>
+                            <div class="text-2xl text-muted font-thin hidden md:block">→</div>
+                            <div id="pipeline-filter" class="pipeline-card pending w-full md:flex-1 bg-main p-6 rounded-lg border border-main stagger-item">
+                                <div class="flex items-center mb-2">
+                                    <span class="w-8 h-8 bg-tertiary rounded-full flex items-center justify-center text-main font-bold mr-3 shrink-0">2</span>
+                                    <h3 class="text-xl font-semibold text-main">Filter Data</h3>
+                                </div>
+                                <div id="pipeline-filter-content" class="text-sm text-muted min-h-[4rem]">Apply filter conditions.</div>
+                            </div>
+                            <div class="text-2xl text-muted font-thin hidden md:block">→</div>
+                            <div id="pipeline-store" class="pipeline-card pending w-full md:flex-1 bg-main p-6 rounded-lg border border-main stagger-item">
+                                <div class="flex items-center mb-2">
+                                    <span class="w-8 h-8 bg-tertiary rounded-full flex items-center justify-center text-main font-bold mr-3 shrink-0">3</span>
+                                    <h3 class="text-xl font-semibold text-main">Store Data</h3>
+                                </div>
+                                <div id="pipeline-store-content" class="text-sm text-muted min-h-[4rem]">Save data to the database.</div>
+                            </div>
+                            <div class="text-2xl text-muted font-thin hidden md:block">→</div>
+                            <div id="pipeline-analyze" class="pipeline-card pending w-full md:flex-1 bg-main p-6 rounded-lg border border-main stagger-item">
+                                <div class="flex items-center mb-2">
+                                    <span class="w-8 h-8 bg-tertiary rounded-full flex items-center justify-center text-main font-bold mr-3 shrink-0">4</span>
+                                    <h3 class="text-xl font-semibold text-main">Analyze Data</h3>
+                                </div>
+                                <div id="pipeline-analyze-content" class="text-sm text-muted min-h-[4rem]">Run data profiling and generate charts.</div>
+                            </div>
+                        </div>
+                        <div id="go-to-analysis-container" class="text-center mt-8 hidden">
+                            <a href="#data-analysis" class="nav-item inline-flex text-blue-400 hover:text-blue-300">
+                                ▸ Go to Data Analysis
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="data-analysis-section" class="main-section">
+                    <div class="card-modern">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-3xl font-bold text-main">Data Analysis Results</h2>
+                            <div id="analysis-status" class="text-sm text-muted">
+                                <!-- Status will be populated dynamically -->
+                            </div>
+                        </div>
+                        <div id="analysis-content">
+                            <div class="text-center text-muted">
+                                <div class="text-5xl mb-4">📊</div>
+                                <p class="mb-4">Run the Data Processing Workflow to see comprehensive analysis results here.</p>
+                                <a href="#batch-data" class="ultra-futuristic-link nav-item">
+                                    <div class="ultra-futuristic-content">
+                                        <div class="pulse-ring"></div>
+                                        <div class="ultra-link-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                <polyline points="14,2 14,8 20,8"></polyline>
+                                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                                <polyline points="10,9 9,9 8,9"></polyline>
+                                            </svg>
+                                        </div>
+                                        <div class="ultra-link-text">
+                                            <div class="primary-text">Launch Batch Data Processing</div>
+                                            <div class="secondary-text">Advanced AI Workflow System</div>
+                                        </div>
+                                        <div class="holographic-effects">
+                                            <div class="holo-layer-1"></div>
+                                            <div class="holo-layer-2"></div>
+                                            <div class="holo-layer-3"></div>
+                                        </div>
+                                        <div class="energy-bars">
+                                            <div class="energy-bar bar-1"></div>
+                                            <div class="energy-bar bar-2"></div>
+                                            <div class="energy-bar bar-3"></div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="stream-data-section" class="main-section">
+                    <div class="card-modern">
+                        <h2 class="text-3xl font-bold text-main mb-2">Stream Data Analysis</h2>
+                        <p class="text-muted mb-6">Search for a company to get insights. Try "innovate", "apple", or "google".</p>
+                        <div class="flex gap-4">
+                            <input type="text" id="company-search-input" placeholder="e.g., 'apple' or 'google'" class="w-full bg-main border border-main rounded-md p-3 focus:ring-blue-500 focus:border-blue-500">
+                            <button id="company-search-btn" class="btn-gradient">Search</button>
+                        </div>
+                        <p id="search-feedback" class="text-red-400 text-sm mt-2 h-5"></p>
+                    </div>
+                </section>
+
+                <section id="data-insights-section" class="main-section">
+                    <div id="company-insights-content">
+                        <!-- Default state when no company is selected -->
+                        <div class="card-modern text-center" id="no-company-selected">
+                            <div class="text-5xl mb-4">🎯</div>
+                            <h2 class="text-2xl font-bold text-main mb-2">No Company Selected</h2>
+                            <p class="text-muted mb-4">Please go to the Stream Data page to view detailed insights.</p>
+                            <a href="#stream-data" class="futuristic-link nav-item">
+                                <div class="futuristic-link-content">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                        <polyline points="3.27,6.96 12,12.01 20.73,6.96"></polyline>
+                                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                    </svg>
+                                    Go to Stream Data
+                                    <div class="link-glow-effect"></div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <!-- Real company data will be dynamically inserted here by renderCompanyInsights() -->
+                        <div id="company-data-content" class="hidden">
+                            <!-- Content will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <section id="database-section" class="main-section">
+                    <div class="bg-card p-8 rounded-2xl">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-3xl font-bold text-main">Database</h2>
+                            <input type="text" id="database-search-input" placeholder="Search datasets..." class="w-1/3 bg-main border border-main rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table id="database-table" class="w-full text-left">
+                                <thead>
+                                    <tr class="border-b border-main">
+                                        <th class="p-3">File Name</th>
+                                        <th class="p-3">Type</th>
+                                        <th class="p-3">Rows</th>
+                                        <th class="p-3">Columns</th>
+                                        <th class="p-3">Size</th>
+                                        <th class="p-3">Date Added</th>
+                                        <th class="p-3">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="reports-section" class="main-section">
+                    <div class="bg-card p-8 rounded-2xl">
+                        <h2 class="text-3xl font-bold text-main mb-6">Comprehensive Financial Reports</h2>
+                        <p class="text-muted mb-8">Generate enterprise-grade financial analysis reports with real-time market data, AI-powered insights, and investment recommendations.</p>
+                        
+                        <!-- Ultra-Futuristic Download Button -->
+                        <div class="text-center">
+                            <button id="download-report-btn" class="ultra-futuristic-link">
+                                <div class="ultra-futuristic-content">
+                                    <div class="pulse-ring"></div>
+                                    <div class="ultra-link-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="7 10 12 15 17 10"></polyline>
+                                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                                        </svg>
+                                    </div>
+                                    <div class="ultra-link-text">
+                                        <div class="primary-text">Generate AI Financial Report</div>
+                                        <div class="secondary-text">Professional Investment Analysis</div>
+                                    </div>
+                                    <div class="holographic-effects">
+                                        <div class="holo-layer-1"></div>
+                                        <div class="holo-layer-2"></div>
+                                        <div class="holo-layer-3"></div>
+                                    </div>
+                                    <div class="energy-bars">
+                                        <div class="energy-bar bar-1"></div>
+                                        <div class="energy-bar bar-2"></div>
+                                        <div class="energy-bar bar-3"></div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                        
+                        <!-- Report Features Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+                            <div class="futuristic-feature-card">
+                                <div class="feature-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 3v18h18"></path>
+                                        <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="feature-title">Live Market Data</h3>
+                                <p class="feature-description">Real-time financial metrics from professional APIs</p>
+                            </div>
+                            
+                            <div class="futuristic-feature-card">
+                                <div class="feature-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                        <line x1="12" x2="12" y1="19" y2="22"></line>
+                                    </svg>
+                                </div>
+                                <h3 class="feature-title">AI Predictions</h3>
+                                <p class="feature-description">Advanced machine learning investment forecasts</p>
+                            </div>
+                            
+                            <div class="futuristic-feature-card">
+                                <div class="feature-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M9 12l2 2 4-4"></path>
+                                        <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"></path>
+                                        <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="feature-title">Risk Analysis</h3>
+                                <p class="feature-description">Comprehensive risk assessment & recommendations</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="activity-log-section" class="main-section">
+                    <div class="bg-card p-8 rounded-2xl">
+                        <h2 class="text-3xl font-bold text-main mb-6">Activity Log</h2>
+                        <div id="history-log-container" class="space-y-4">
+                            <p class="text-muted">No activity yet. Start by running the batch data processing workflow.</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="settings-section" class="main-section">
+                    <div class="bg-card p-8 rounded-2xl space-y-8">
+                        <h2 class="text-3xl font-bold text-main">Settings</h2>
+                        <div>
+                            <h3 class="text-xl font-semibold text-main border-b border-main pb-2 mb-4">User Profile</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="user-name-input" class="text-sm text-muted">Full Name</label>
+                                    <input type="text" id="user-name-input" value="Alex Doe" class="w-full mt-1 bg-main border border-main rounded-md p-2">
+                                </div>
+                                <div>
+                                    <label for="user-email-input" class="text-sm text-muted">Email Address</label>
+                                    <input type="email" id="user-email-input" value="alex.doe@example.com" class="w-full mt-1 bg-main border border-main rounded-md p-2">
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <button id="save-profile-btn" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition">Save Profile</button>
+                                <p id="profile-save-feedback" class="text-green-400 text-sm mt-2 h-4 inline-block ml-4"></p>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-main border-b border-main pb-2 mb-4">Appearance</h3>
+                            <div class="flex items-center gap-4">
+                                <span class="text-muted">Theme</span>
+                                <button id="theme-dark-btn" class="px-4 py-2 rounded-lg bg-slate-700 text-white">Dark</button>
+                                <button id="theme-light-btn" class="px-4 py-2 rounded-lg bg-slate-300 text-black">Light</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Professional Astra Workspace (40:20:40 Layout) -->
+    <div id="astra-workspace" class="astra-workspace hidden">
+        <!-- Left Panel - 3D Astra (40%) -->
+        <div class="astra-3d-panel">
+            <div class="astra-3d-overlay"></div>
+            <div class="astra-3d-container"></div>
+            <div class="astra-3d-controls">
+                <button class="astra-voice-btn" title="Voice Control">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" x2="12" y1="19" y2="22"></line>
+                    </svg>
+                </button>
+                <button class="close-btn" title="Close Workspace">&times;</button>
+            </div>
+            <div class="astra-status">
+                Hello! I am Astra. Click the voice button to start.
+            </div>
+        </div>
+
+        <!-- Middle Panel - Workflow (20%) -->
+        <div class="astra-workflow-panel">
+            <!-- Top Half - Chat Sessions -->
+            <div class="workflow-top">
+                <h3 class="text-sm font-bold text-main mb-3">Chat Sessions</h3>
+                <button class="new-chat-btn mb-4">+ New Chat</button>
+                <div class="chat-sessions">
+                    <div class="chat-sessions-list">
+                        <!-- Chat sessions will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Half - Workflow Blocks -->
+            <div class="workflow-bottom">
+                <h2 class="section-title">Astra Workflow</h2>
+                <div class="workflow-blocks">
+                    <div class="workflow-block" data-step="upload">
+                        <div class="workflow-block-header">
+                            <span class="workflow-block-number">1</span>
+                            <span class="workflow-block-title">Upload Data</span>
+                        </div>
+                        <div class="workflow-block-description">
+                            Say "upload file" or click to select data
+                        </div>
+                    </div>
+                    <div class="workflow-block" data-step="filter">
+                        <div class="workflow-block-header">
+                            <span class="workflow-block-number">2</span>
+                            <span class="workflow-block-title">Filter Data</span>
+                        </div>
+                        <div class="workflow-block-description">
+                            Say "filter data" to apply conditions
+                        </div>
+                    </div>
+                    <div class="workflow-block" data-step="database">
+                        <div class="workflow-block-header">
+                            <span class="workflow-block-number">3</span>
+                            <span class="workflow-block-title">Save to Database</span>
+                        </div>
+                        <div class="workflow-block-description">
+                            Say "save to database" to store data
+                        </div>
+                    </div>
+                    <div class="workflow-block" data-step="analysis">
+                        <div class="workflow-block-header">
+                            <span class="workflow-block-number">4</span>
+                            <span class="workflow-block-title">Analyze Data</span>
+                        </div>
+                        <div class="workflow-block-description">
+                            Say "analyze this" to generate insights
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Chat Assistant (40%) -->
+        <div class="astra-chat-panel">
+            <div class="chat-header">
+                <h3>Astra Chat Assistant</h3>
+                <div id="code-assistant-indicator" class="hidden">
+                    <span class="text-xs px-2 py-1 rounded bg-blue-600 text-white">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline mr-1">
+                            <polyline points="16,18 22,12 16,6"></polyline>
+                            <polyline points="8,6 2,12 8,18"></polyline>
+                        </svg>
+                        Code Assistant Active
+                    </span>
+                </div>
+            </div>
+            <div id="astra-chat-messages" class="chat-messages">
+                <!-- Chat messages will be populated dynamically -->
+            </div>
+            <div class="chat-input-area">
+                <!-- File Upload Area -->
+                
+                <!-- Chat Input -->
+                <form id="astra-chat-form" class="chat-input-container">
+                    <textarea id="astra-chat-input" class="chat-input" placeholder="Type your message or ask about your data..." rows="1"></textarea>
+                    <button type="button" class="chat-upload-btn" aria-label="Upload file">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </button>
+                    <button type="submit" class="chat-send-btn">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="login-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="card-modern w-full max-w-sm shadow-2xl space-y-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-main">Login</h2>
+                <button id="close-login-modal-btn" class="text-muted hover:text-main text-2xl font-bold">&times;</button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="username-input" class="block text-sm font-medium text-muted">Username</label>
+                    <input type="text" id="username-input" class="w-full mt-1 bg-main border border-main rounded-md p-2" value="bhanu">
+                </div>
+                <div>
+                    <label for="password-input" class="block text-sm font-medium text-muted">Password</label>
+                    <input type="password" id="password-input" class="w-full mt-1 bg-main border border-main rounded-md p-2" value="password">
+                </div>
+                <p id="login-error-msg" class="text-red-400 text-sm h-4"></p>
+            </div>
+            <div class="mt-6 flex justify-end gap-4">
+                <button id="login-submit-btn" class="btn-gradient">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workflow Modal -->
+    <div id="workflow-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="card-modern w-full max-w-lg shadow-2xl space-y-6">
+            <h2 class="text-2xl font-bold text-main">Initiate Data Workflow</h2>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <label class="block text-sm font-medium text-muted">1. Upload your dataset(s)</label>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-muted">Join Tables?</span>
+                        <label for="join-toggle" class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="join-toggle" class="sr-only toggle-checkbox">
+                            <div class="toggle-bg w-14 h-8 bg-gray-500 rounded-full transition-colors"></div>
+                            <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform"></div>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <input type="file" id="workflow-file-input" class="mt-1 block w-full text-sm text-muted file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer" accept=".csv,.xlsx,.xls"/>
+                    <p id="workflow-file-name" class="text-xs text-green-400 mt-1"></p>
+                </div>
+                <div>
+                    <label for="filter-condition-input" class="block text-sm font-medium text-muted">2. Enter a filter or join condition</label>
+                    <input type="text" id="filter-condition-input" class="w-full mt-1 bg-main border border-main rounded-md p-3 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., age > 30 OR table1.id = table2.id">
+                    <div id="sql-preview" class="text-xs text-blue-400 mt-1"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-muted">3. Store Filtered Data?</label>
+                    <div class="mt-2 flex gap-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="store-data" value="yes" class="form-radio h-4 w-4 text-blue-600 bg-tertiary border-main" checked>
+                            <span class="ml-2 text-main">Yes, store in database</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="store-data" value="no" class="form-radio h-4 w-4 text-blue-600 bg-tertiary border-main">
+                            <span class="ml-2 text-main">No, skip</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-muted">4. Analyze Data?</label>
+                    <div class="mt-2 flex gap-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="analyze-data" value="yes" class="form-radio h-4 w-4 text-blue-600 bg-tertiary border-main" checked>
+                            <span class="ml-2 text-main">Yes, run analysis</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="analyze-data" value="no" class="form-radio h-4 w-4 text-blue-600 bg-tertiary border-main">
+                            <span class="ml-2 text-main">No, skip</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end gap-4">
+                <button id="cancel-workflow-btn" class="bg-slate-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-slate-700 transition">Cancel</button>
+                <button id="submit-workflow-btn" class="btn-gradient bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">Run Workflow</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Astra Voice Agent Button -->
+    <!-- Remove everything from <button id="astra-voice-agent-btn" ...> to </script> (inclusive) -->
+    <!-- JavaScript Modules -->
+    <script src="js/astra-agent.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/astra.js"></script>
+    <script src="js/voice.js"></script>
+    <script src="js/3d-astra.js"></script>
+    
+    <!-- Test Professional Voice Agent -->
+    <script>
+    </script>
+    
+    <!-- Initialize App -->
+    <script>
+        // Create global instance for onclick handlers
+        let astraApp;
+        document.addEventListener('DOMContentLoaded', () => {
+            astraApp = new AstraApp();
+            window.astraApp = astraApp; // Make it globally accessible
+        });
+    </script>
+</body>
+</html>

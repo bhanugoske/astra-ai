@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Generation Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #e2e8f0;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #475569;
+            border-radius: 8px;
+        }
+        .test-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: #2d3748;
+            border: 1px solid #475569;
+            color: #e2e8f0;
+            border-radius: 4px;
+        }
+        .test-button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background: #2563eb;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            background: #1e293b;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+        }
+        .error {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <h1>Code Generation Test</h1>
+    
+    <div class="test-section">
+        <h3>Test SQL Generation</h3>
+        <input type="text" id="sql-test" class="test-input" 
+               value="Write a SQL query to join two tables users and orders" placeholder="Enter SQL request">
+        <button onclick="testCodeGeneration('sql')" class="test-button">Test SQL</button>
+        <div id="sql-response" class="response"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Python Generation</h3>
+        <input type="text" id="python-test" class="test-input" 
+               value="Write a Python function to calculate fibonacci numbers" placeholder="Enter Python request">
+        <button onclick="testCodeGeneration('python')" class="test-button">Test Python</button>
+        <div id="python-response" class="response"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test JavaScript Generation</h3>
+        <input type="text" id="js-test" class="test-input" 
+               value="Write a JavaScript function to sort an array" placeholder="Enter JavaScript request">
+        <button onclick="testCodeGeneration('js')" class="test-button">Test JavaScript</button>
+        <div id="js-response" class="response"></div>
+    </div>
+
+    <script>
+        async function testCodeGeneration(type) {
+            const input = document.getElementById(`${type}-test`);
+            const responseDiv = document.getElementById(`${type}-response`);
+            
+            responseDiv.textContent = 'Loading...';
+            
+            try {
+                const response = await fetch('/api/deepseek', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: input.value })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    responseDiv.innerHTML = `<span class="error">Error: ${data.error}</span>`;
+                } else {
+                    responseDiv.textContent = data.code;
+                }
+                
+            } catch (error) {
+                responseDiv.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+            }
+        }
+    </script>
+</body>
+</html> 
